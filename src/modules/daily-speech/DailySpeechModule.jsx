@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { FiCopy, FiCheck, FiMic, FiRefreshCw, FiPlus, FiTrash2, FiChevronDown, FiChevronUp, FiZap, FiLoader, FiDownloadCloud } from 'react-icons/fi'
-import { enhanceSpeechWithAI, generateSpeechFromJiraData } from './speechAI'
-import { isJiraConfigured, fetchJiraTicket, extractTicketKey } from './jiraApi'
+import { FiCopy, FiCheck, FiMic, FiRefreshCw, FiPlus, FiTrash2, FiChevronDown, FiChevronUp, FiZap, FiLoader } from 'react-icons/fi'
+import { enhanceSpeechWithAI } from './speechAI'
 
 const emptyTicket = {
   id: Date.now(),
@@ -21,13 +20,6 @@ function DailySpeechModule() {
   const [expandedTicket, setExpandedTicket] = useState(0)
   const [aiLoading, setAiLoading] = useState(false)
   const [aiError, setAiError] = useState(null)
-
-  // Jira import
-  const [jiraInput, setJiraInput] = useState('')
-  const [jiraLoading, setJiraLoading] = useState(false)
-  const [jiraError, setJiraError] = useState(null)
-
-  const jiraEnabled = isJiraConfigured()
 
   const addTicket = () => {
     setTickets(prev => [...prev, { ...emptyTicket, id: Date.now() }])
@@ -50,88 +42,6 @@ function DailySpeechModule() {
     setExpandedTicket(expandedTicket === index ? -1 : index)
   }
 
-  const importFromJira = async () => {
-    if (!jiraInput.trim()) return
-    setJiraLoading(true)
-    setJiraError(null)
-
-    try {
-      const ticket = await fetchJiraTicket(jiraInput)
-
-      // Auto-fill "what did" from Done subtasks + latest comment
-      const doneTasks = ticket.subtasks.filter(st => st.status === 'Done' || st.status === 'Closed')
-      const inProgressTasks = ticket.subtasks.filter(st => st.status === 'In Progress')
-      const todoTasks = ticket.subtasks.filter(st => st.status !== 'Done' && st.status !== 'Closed' && st.status !== 'In Progress')
-
-      let whatDid = ''
-      if (ticket.status !== 'To Do') {
-        if (doneTasks.length > 0) {
-          whatDid = doneTasks.map(st => st.summary).join(', ')
-        }
-        // Add context from latest comment if available
-        if (ticket.comments.length > 0) {
-          const latestComment = ticket.comments[ticket.comments.length - 1].body
-          if (latestComment && !whatDid) {
-            whatDid = latestComment.substring(0, 150)
-          }
-        }
-        if (!whatDid) {
-          whatDid = `Worked on: ${ticket.summary}`
-        }
-      }
-
-      // Auto-fill "what next" from In Progress or To Do subtasks
-      let whatNext = ''
-      if (inProgressTasks.length > 0) {
-        whatNext = inProgressTasks.map(st => st.summary).join(', ')
-      } else if (todoTasks.length > 0) {
-        whatNext = todoTasks.slice(0, 2).map(st => st.summary).join(', ')
-      } else {
-        whatNext = 'Continue with the ticket'
-      }
-
-      const newTicket = {
-        id: Date.now(),
-        ticketId: ticket.key,
-        title: ticket.summary,
-        status: ticket.status,
-        whatDid,
-        whatNext,
-        _jiraData: ticket,
-      }
-
-      // Auto-fill blockers if ticket status indicates blocked
-      const isBlocked = ticket.status.toLowerCase().includes('block') || 
-                        ticket.status.toLowerCase().includes('impediment') ||
-                        ticket.status.toLowerCase().includes('waiting')
-      if (isBlocked) {
-        let blockerReason = ''
-        if (ticket.comments.length > 0) {
-          blockerReason = `${ticket.key}: ${ticket.comments[ticket.comments.length - 1].body}`
-        } else {
-          blockerReason = `${ticket.key}: ${ticket.summary}`
-        }
-        setBlockers(current => current ? `${current}, ${blockerReason}` : blockerReason)
-      }
-
-      // Add or replace first empty ticket
-      const firstEmptyIdx = tickets.findIndex(t => !t.ticketId && !t.title)
-      if (firstEmptyIdx >= 0) {
-        setTickets(prev => prev.map((t, i) => i === firstEmptyIdx ? newTicket : t))
-        setExpandedTicket(firstEmptyIdx)
-      } else {
-        setTickets(prev => [...prev, newTicket])
-        setExpandedTicket(tickets.length)
-      }
-
-      setJiraInput('')
-    } catch (err) {
-      setJiraError(err.message)
-    } finally {
-      setJiraLoading(false)
-    }
-  }
-
   const canGenerate = tickets.some(t => t.ticketId && t.title)
 
   const generateSpeech = () => {
@@ -143,13 +53,10 @@ function DailySpeechModule() {
 
     validTickets.forEach(t => {
       if (t.status === 'To Do') {
-        // To Do tickets only go in "today" section
         nextItems.push(`${t.ticketId}: ${t.whatNext || t.title}`)
       } else if (t.status === 'Done') {
-        // Done tickets only go in "yesterday" section
         doneItems.push(`${t.ticketId}: ${t.whatDid || t.title}`)
       } else {
-        // In Progress, In Review, Blocked — show in both
         if (t.whatDid) {
           doneItems.push(`${t.ticketId}: ${t.whatDid}`)
         } else {
@@ -202,21 +109,6 @@ function DailySpeechModule() {
     setAiLoading(true)
     setAiError(null)
 
-    // If we have Jira data, use it for richer AI generation
-    const ticketsWithJiraData = validTickets.filter(t => t._jiraData)
-    if (ticketsWithJiraData.length > 0) {
-      try {
-        // Use the first ticket with Jira data for now (could combine multiple)
-        const enhanced = await generateSpeechFromJiraData(ticketsWithJiraData[0]._jiraData)
-        setAiSpeech(enhanced)
-        setAiLoading(false)
-        return
-      } catch {
-        // Fall through to basic enhancement
-      }
-    }
-
-    // Fallback: basic enhancement from form data
     try {
       const enhanced = await enhanceSpeechWithAI(validTickets, blockers)
       setAiSpeech(enhanced)
@@ -262,46 +154,6 @@ function DailySpeechModule() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Ticket inputs */}
         <div className="space-y-3">
-
-          {/* Jira import */}
-          {jiraEnabled && (
-            <div className="card border-blue-500/30">
-              <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                <FiDownloadCloud className="text-blue-400" />
-                Importar desde Jira
-              </h3>
-              <div className="flex gap-2">
-                <input
-                  className="input-field text-sm flex-1"
-                  placeholder="Pega el link o ID del ticket (ej: DI-290)"
-                  value={jiraInput}
-                  onChange={e => setJiraInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && importFromJira()}
-                />
-                <button
-                  onClick={importFromJira}
-                  disabled={jiraLoading || !jiraInput.trim()}
-                  className="btn-primary text-sm flex items-center gap-1 disabled:opacity-50"
-                >
-                  {jiraLoading ? <FiLoader className="animate-spin" /> : <FiDownloadCloud />}
-                  {jiraLoading ? '...' : 'Importar'}
-                </button>
-              </div>
-              {jiraError && (
-                <p className="text-xs text-red-400 mt-2">{jiraError}</p>
-              )}
-              <p className="text-xs text-gray-500 mt-2">
-                Trae automáticamente título, status y subtareas del ticket.
-              </p>
-            </div>
-          )}
-
-          {!jiraEnabled && (
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-xs text-gray-500">
-              💡 Configura <code className="text-blue-400">VITE_JIRA_*</code> en tu archivo <code>.env</code> para importar tickets directo desde Jira.
-            </div>
-          )}
-
           {/* Tickets */}
           {tickets.map((ticket, index) => (
             <div key={ticket.id} className="card">
