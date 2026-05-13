@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FiCopy, FiCheck, FiAlertCircle, FiZap, FiLoader, FiSearch } from 'react-icons/fi'
-import { diagnoseError } from './groqService'
+import { diagnoseError } from '../../services/groqAI'
 
 function TroubleshootingModule() {
   const [errorInput, setErrorInput] = useState('')

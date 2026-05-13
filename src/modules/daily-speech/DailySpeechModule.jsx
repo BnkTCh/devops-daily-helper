@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FiCopy, FiCheck, FiMic, FiRefreshCw, FiPlus, FiTrash2, FiChevronDown, FiChevronUp, FiZap, FiLoader } from 'react-icons/fi'
-import { enhanceSpeechWithAI } from './speechAI'
+import { enhanceSpeechWithAI } from '../../services/groqAI'
 
 const emptyTicket = {
   id: Date.now(),

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FiCopy, FiCheck, FiDownload, FiZap, FiLoader } from 'react-icons/fi'
-import { generateYamlWithAI } from './yamlAI'
+import { generateYamlWithAI } from '../../services/groqAI'
 
 const examples = [
   'Un deployment para una app Node.js llamada "payment-service" con 3 replicas, 256Mi de memoria, puerto 3000 y health check en /health',
