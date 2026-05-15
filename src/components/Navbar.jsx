@@ -12,12 +12,12 @@ function Navbar() {
   const location = useLocation()
 
   return (
-    <nav className="bg-slate-900 border-b border-slate-700 sticky top-0 z-50">
+    <nav className="bg-red-600 border-b border-red-700 sticky top-0 z-50 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2">
-            <FiTerminal className="text-primary text-2xl" />
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <FiTerminal className="text-white text-2xl" />
+            <span className="text-xl font-bold text-white">
               DevOps Daily Helper
             </span>
           </Link>
@@ -28,8 +28,8 @@ function Navbar() {
                 to={path}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === path
-                    ? 'bg-slate-700 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-red-700 text-white'
+                    : 'text-red-100 hover:text-white hover:bg-red-500'
                 }`}
               >
                 <Icon className="text-lg" />
