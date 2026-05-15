@@ -55,8 +55,8 @@ function YamlGeneratorModule() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">📄 Generador de YAMLs</h1>
-      <p className="text-gray-500 mb-6">
+      <h1 className="text-3xl font-bold text-white mb-2">📄 Generador de YAMLs</h1>
+      <p className="text-gray-400 mb-6">
         Describe lo que necesitas en lenguaje natural y la IA genera el manifiesto de Kubernetes por ti.
       </p>
 
@@ -64,7 +64,7 @@ function YamlGeneratorModule() {
         {/* Left: Input */}
         <div className="space-y-4">
           <div className="card">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">¿Qué necesitas?</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">¿Qué necesitas?</h3>
             <p className="text-xs text-gray-500 mb-3">
               Describe el recurso de Kubernetes que quieres. Sé tan específico como quieras — nombre, namespace, puertos, replicas, limits, etc.
             </p>
@@ -83,7 +83,7 @@ function YamlGeneratorModule() {
               {loading ? <FiLoader className="animate-spin" /> : <FiZap />}
               {loading ? 'Generando...' : 'Generar YAML'}
             </button>
-            <p className="text-xs text-gray-400 mt-2 text-center">⌘+Enter para generar</p>
+            <p className="text-xs text-gray-600 mt-2 text-center">⌘+Enter para generar</p>
           </div>
 
           {/* Examples */}
@@ -94,7 +94,7 @@ function YamlGeneratorModule() {
                 <button
                   key={idx}
                   onClick={() => setPrompt(ex)}
-                  className="w-full text-left text-xs text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded px-3 py-2 transition-colors leading-relaxed"
+                  className="w-full text-left text-xs text-gray-400 hover:text-white bg-slate-900 hover:bg-slate-800 rounded px-3 py-2 transition-colors leading-relaxed"
                 >
                   {ex}
                 </button>
@@ -106,15 +106,15 @@ function YamlGeneratorModule() {
         {/* Right: Output */}
         <div>
           {error && (
-            <div className="card border-red-300 bg-red-50 mb-4">
-              <span className="text-sm text-red-600">{error}</span>
+            <div className="card border-red-500/50 bg-red-900/10 mb-4">
+              <span className="text-sm text-red-400">{error}</span>
             </div>
           )}
 
           {result ? (
             <div className="card sticky top-20">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">YAML Generado</h3>
+                <h3 className="text-lg font-semibold text-white">YAML Generado</h3>
                 <div className="flex gap-2">
                   <button onClick={copyYaml} className="btn-primary text-sm flex items-center gap-1">
                     {copied ? <FiCheck /> : <FiCopy />}
@@ -126,7 +126,7 @@ function YamlGeneratorModule() {
                   </button>
                 </div>
               </div>
-              <pre className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-[600px] text-sm font-mono text-green-400 leading-relaxed">
+              <pre className="bg-black/50 rounded-lg p-4 overflow-auto max-h-[600px] text-sm font-mono text-green-400 leading-relaxed">
                 {result}
               </pre>
               <p className="text-xs text-gray-500 mt-3">
@@ -134,11 +134,11 @@ function YamlGeneratorModule() {
               </p>
             </div>
           ) : (
-            <div className="card flex items-center justify-center h-64 text-gray-400">
+            <div className="card flex items-center justify-center h-64 text-gray-500">
               <div className="text-center">
-                <FiZap className="text-4xl mx-auto mb-3 text-gray-300" />
+                <FiZap className="text-4xl mx-auto mb-3 text-gray-600" />
                 <p>Describe lo que necesitas y haz click en "Generar YAML"</p>
-                <p className="text-xs mt-2 text-gray-400">Generación con IA usando Groq</p>
+                <p className="text-xs mt-2 text-gray-600">Generación con IA usando Groq</p>
               </div>
             </div>
           )}

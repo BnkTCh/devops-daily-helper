@@ -137,17 +137,17 @@ function DailySpeechModule() {
   const statusOptions = ['In Progress', 'To Do', 'In Review', 'Blocked', 'Done']
 
   const statusColors = {
-    'Done': 'text-green-700 bg-green-100 border-green-300',
-    'In Progress': 'text-blue-700 bg-blue-100 border-blue-300',
-    'To Do': 'text-gray-700 bg-gray-100 border-gray-300',
-    'In Review': 'text-purple-700 bg-purple-100 border-purple-300',
-    'Blocked': 'text-red-700 bg-red-100 border-red-300',
+    'Done': 'text-green-400 bg-green-900/30 border-green-800',
+    'In Progress': 'text-blue-400 bg-blue-900/30 border-blue-800',
+    'To Do': 'text-gray-400 bg-gray-900/30 border-gray-700',
+    'In Review': 'text-purple-400 bg-purple-900/30 border-purple-800',
+    'Blocked': 'text-red-400 bg-red-900/30 border-red-800',
   }
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">🎤 Daily Speech</h1>
-      <p className="text-gray-500 mb-6">
+      <h1 className="text-3xl font-bold text-white mb-2">🎤 Daily Speech</h1>
+      <p className="text-gray-400 mb-6">
         Agrega tus tickets, genera el speech estructurado y usa IA para que suene natural. El speech se genera en inglés.
       </p>
 
@@ -162,12 +162,12 @@ function DailySpeechModule() {
                 onClick={() => toggleExpand(index)}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-red-600">#{index + 1}</span>
-                  <span className="text-sm font-medium text-gray-800">
+                  <span className="text-xs font-bold text-accent">#{index + 1}</span>
+                  <span className="text-sm font-medium text-white">
                     {ticket.ticketId || 'Nuevo ticket'}
                   </span>
                   {ticket.ticketId && ticket.status && (
-                    <span className={`text-xs px-2 py-0.5 rounded ${statusColors[ticket.status] || 'text-gray-700 bg-gray-100'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded ${statusColors[ticket.status] || 'text-gray-400 bg-gray-900/30'}`}>
                       {ticket.status}
                     </span>
                   )}
@@ -176,7 +176,7 @@ function DailySpeechModule() {
                   {tickets.length > 1 && (
                     <button
                       onClick={(e) => { e.stopPropagation(); removeTicket(index); }}
-                      className="text-gray-400 hover:text-red-500 transition-colors"
+                      className="text-gray-500 hover:text-red-400 transition-colors"
                     >
                       <FiTrash2 className="text-sm" />
                     </button>
@@ -206,8 +206,8 @@ function DailySpeechModule() {
                             onClick={() => updateTicket(index, 'status', opt)}
                             className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                               ticket.status === opt
-                                ? statusColors[opt] || 'bg-gray-200 text-gray-800'
-                                : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                                ? statusColors[opt] || 'bg-slate-600 text-white'
+                                : 'bg-slate-800 text-gray-500 hover:text-gray-300'
                             }`}
                           >
                             {opt}
@@ -253,7 +253,7 @@ function DailySpeechModule() {
 
           <button
             onClick={addTicket}
-            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 hover:text-red-600 hover:border-red-400 transition-colors flex items-center justify-center gap-2 text-sm"
+            className="w-full py-3 border-2 border-dashed border-slate-700 rounded-xl text-gray-400 hover:text-white hover:border-accent transition-colors flex items-center justify-center gap-2 text-sm"
           >
             <FiPlus />
             Agregar otro ticket
@@ -273,14 +273,14 @@ function DailySpeechModule() {
             <button
               onClick={generateSpeech}
               disabled={!canGenerate}
-              className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed flex-1 justify-center"
+              className="btn-accent flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed flex-1 justify-center"
             >
               <FiMic />
               Generar Speech
             </button>
             <button
               onClick={reset}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-600 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              className="bg-slate-700 hover:bg-slate-600 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
             >
               <FiRefreshCw />
             </button>
@@ -292,12 +292,12 @@ function DailySpeechModule() {
           {generatedSpeech ? (
             <div className="space-y-4">
               <div className="card">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Tickets ({generatedSpeech.tickets.length})</h3>
+                <h3 className="text-lg font-semibold text-white mb-3">📋 Tickets ({generatedSpeech.tickets.length})</h3>
                 <div className="space-y-2">
                   {generatedSpeech.tickets.map((t, idx) => (
-                    <div key={idx} className="flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2">
-                      <span className="text-xs text-red-600 font-mono font-bold">{t.ticketId}</span>
-                      <span className="text-xs text-gray-600 flex-1 truncate">{t.title}</span>
+                    <div key={idx} className="flex items-center gap-3 bg-slate-900 rounded-lg px-3 py-2">
+                      <span className="text-xs text-blue-400 font-mono font-bold">{t.ticketId}</span>
+                      <span className="text-xs text-gray-300 flex-1 truncate">{t.title}</span>
                       <span className={`text-xs px-2 py-0.5 rounded ${statusColors[t.status] || ''}`}>
                         {t.status}
                       </span>
@@ -308,13 +308,13 @@ function DailySpeechModule() {
 
               <div className="card">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-gray-700">📝 Speech estructurado</h3>
-                  <button onClick={() => copySpeech(generatedSpeech.speechText)} className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1">
-                    {copied && !aiSpeech ? <FiCheck className="text-green-500" /> : <FiCopy />}
+                  <h3 className="text-sm font-semibold text-gray-300">📝 Speech estructurado</h3>
+                  <button onClick={() => copySpeech(generatedSpeech.speechText)} className="text-xs text-gray-400 hover:text-white flex items-center gap-1">
+                    {copied && !aiSpeech ? <FiCheck className="text-green-400" /> : <FiCopy />}
                     Copiar
                   </button>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 text-gray-700 text-xs leading-relaxed whitespace-pre-line font-mono">
+                <div className="bg-slate-900 rounded-lg p-4 text-gray-300 text-xs leading-relaxed whitespace-pre-line font-mono">
                   {generatedSpeech.speechText}
                 </div>
               </div>
@@ -322,29 +322,29 @@ function DailySpeechModule() {
               <button
                 onClick={handleAIEnhance}
                 disabled={aiLoading}
-                className="w-full py-3 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {aiLoading ? <FiLoader className="animate-spin" /> : <FiZap />}
                 {aiLoading ? 'Generando versión natural...' : '✨ Hacerlo sonar natural con IA'}
               </button>
 
               {aiError && (
-                <div className="text-xs text-red-500 text-center">{aiError}</div>
+                <div className="text-xs text-red-400 text-center">{aiError}</div>
               )}
 
               {aiSpeech && (
-                <div className="card border-red-200 bg-red-50/30">
+                <div className="card border-purple-500/30 bg-gradient-to-br from-slate-800 to-slate-900">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                       🎤 Speech con IA
-                      <span className="text-xs font-normal text-red-600 bg-red-100 px-2 py-0.5 rounded">powered by Groq</span>
+                      <span className="text-xs font-normal text-purple-400 bg-purple-900/30 px-2 py-0.5 rounded">powered by Groq</span>
                     </h3>
                     <button onClick={() => copySpeech(aiSpeech)} className="btn-primary text-sm flex items-center gap-1">
                       {copied && aiSpeech ? <FiCheck /> : <FiCopy />}
                       Copiar
                     </button>
                   </div>
-                  <div className="bg-white rounded-lg p-5 text-gray-700 text-sm leading-relaxed whitespace-pre-line border border-red-100">
+                  <div className="bg-black/30 rounded-lg p-5 text-gray-200 text-sm leading-relaxed whitespace-pre-line border border-purple-900/50">
                     {aiSpeech}
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
@@ -355,18 +355,18 @@ function DailySpeechModule() {
 
               <button
                 onClick={reset}
-                className="text-sm text-gray-400 hover:text-gray-700 flex items-center gap-1 transition-colors"
+                className="text-sm text-gray-400 hover:text-white flex items-center gap-1 transition-colors"
               >
                 <FiRefreshCw />
                 Empezar de nuevo
               </button>
             </div>
           ) : (
-            <div className="card flex items-center justify-center h-64 text-gray-400">
+            <div className="card flex items-center justify-center h-64 text-gray-500">
               <div className="text-center">
-                <FiMic className="text-4xl mx-auto mb-3 text-gray-300" />
+                <FiMic className="text-4xl mx-auto mb-3 text-gray-600" />
                 <p>Agrega tus tickets y genera el speech</p>
-                <p className="text-xs mt-2 text-gray-400">Luego usa IA para que suene natural ✨</p>
+                <p className="text-xs mt-2 text-gray-600">Luego usa IA para que suene natural ✨</p>
               </div>
             </div>
           )}

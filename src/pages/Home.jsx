@@ -29,10 +29,10 @@ function Home() {
   return (
     <div>
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+        <h1 className="text-4xl font-bold text-white mb-4">
           DevOps Daily Helper
         </h1>
-        <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
           Tu asistente para el día a día en DevOps. Troubleshooting con IA, generación de YAMLs y preparación de dailies — todo en un solo lugar.
         </p>
       </div>
@@ -42,7 +42,7 @@ function Home() {
         ))}
       </div>
       <footer className="text-center mt-16 text-gray-400 text-sm">
-        Realizado por Bianca Torres ❤️
+        Realizado por Bianca Torres 💜
       </footer>
     </div>
   )
